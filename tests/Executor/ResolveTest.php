@@ -33,7 +33,8 @@ final class ResolveTest extends TestCase
     }
 
     /**
-     * @param UnnamedFieldDefinitionConfig $testField
+     * @param array $testField
+     * @phpstan-param UnnamedFieldDefinitionConfig $testField
      *
      * @throws InvariantViolation
      */
