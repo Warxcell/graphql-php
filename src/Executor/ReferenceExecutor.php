@@ -882,7 +882,7 @@ class ReferenceExecutor implements ExecutorImplementation
         // If field type is NonNull, complete for inner type, and throw field error
         // if result is null.
         if ($returnType instanceof NonNull) {
-            $completed = $this->completeValue(
+            return $this->completeValue(
                 $returnType->getWrappedType(),
                 $fieldNodes,
                 $info,
@@ -891,11 +891,6 @@ class ReferenceExecutor implements ExecutorImplementation
                 $result,
                 $contextValue
             );
-            if ($completed === null) {
-                throw new InvariantViolation("Cannot return null for non-nullable field \"{$info->parentType}.{$info->fieldName}\".");
-            }
-
-            return $completed;
         }
 
         if ($result === null) {
@@ -904,12 +899,6 @@ class ReferenceExecutor implements ExecutorImplementation
 
         // If field type is List, complete each item in the list with the inner type
         if ($returnType instanceof ListOfType) {
-            if (! \is_iterable($result)) {
-                $resultType = \gettype($result);
-
-                throw new InvariantViolation("Expected field {$info->parentType}.{$info->fieldName} to return iterable, but got: {$resultType}.");
-            }
-
             return $this->completeListValue($returnType, $fieldNodes, $info, $path, $unaliasedPath, $result, $contextValue);
         }
 
@@ -1109,8 +1098,6 @@ class ReferenceExecutor implements ExecutorImplementation
                 $this->ensureValidRuntimeType(
                     $resolvedRuntimeType,
                     $returnType,
-                    $info,
-                    $result
                 ),
                 $fieldNodes,
                 $info,
@@ -1125,8 +1112,6 @@ class ReferenceExecutor implements ExecutorImplementation
             $this->ensureValidRuntimeType(
                 $runtimeType,
                 $returnType,
-                $info,
-                $result
             ),
             $fieldNodes,
             $info,
@@ -1451,23 +1436,13 @@ class ReferenceExecutor implements ExecutorImplementation
      */
     protected function ensureValidRuntimeType(
         $runtimeTypeOrName,
-        AbstractType $returnType,
-        ResolveInfo $info,
-        &$result
+        AbstractType $returnType
     ): ObjectType {
         $runtimeType = \is_string($runtimeTypeOrName)
             ? $this->exeContext->schema->getType($runtimeTypeOrName)
             : $runtimeTypeOrName;
 
-        if (! $runtimeType instanceof ObjectType) {
-            $safeResult = Utils::printSafe($result);
-            $notObjectType = Utils::printSafe($runtimeType);
-            throw new InvariantViolation("Abstract type {$returnType} must resolve to an Object type at runtime for field {$info->parentType}.{$info->fieldName} with value {$safeResult}, received \"{$notObjectType}\". Either the {$returnType} type should provide a \"resolveType\" function or each possible type should provide an \"isTypeOf\" function.");
-        }
-
-        if (! $this->exeContext->schema->isSubType($returnType, $runtimeType)) {
-            throw new InvariantViolation("Runtime Object type \"{$runtimeType}\" is not a possible type for \"{$returnType}\".");
-        }
+        \assert($runtimeType instanceof ObjectType);
 
         \assert(
             $this->exeContext->schema->getType($runtimeType->name) !== null,
