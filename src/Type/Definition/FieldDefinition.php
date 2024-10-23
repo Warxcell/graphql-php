@@ -5,7 +5,6 @@ namespace GraphQL\Type\Definition;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\Executor;
 use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\FieldNode;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\Utils;
 
@@ -13,9 +12,9 @@ use GraphQL\Utils\Utils;
  * @see Executor
  *
  * @phpstan-import-type FieldResolver from Executor
+ * @phpstan-import-type ArgsMapper from Executor
  * @phpstan-import-type ArgumentListConfig from Argument
  *
- * @phpstan-type ArgsMapper callable(array<string, mixed>, FieldDefinition, FieldNode): mixed
  * @phpstan-type FieldType (Type&OutputType)|callable(): (Type&OutputType)
  * @phpstan-type ComplexityFn callable(int, array<string, mixed>): int
  * @phpstan-type VisibilityFn callable(): bool

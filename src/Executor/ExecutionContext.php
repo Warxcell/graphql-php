@@ -6,7 +6,6 @@ use GraphQL\Error\Error;
 use GraphQL\Executor\Promise\PromiseAdapter;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
-use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Schema;
 
 /**
@@ -16,7 +15,7 @@ use GraphQL\Type\Schema;
  * and the fragments defined in the query document.
  *
  * @phpstan-import-type FieldResolver from Executor
- * @phpstan-import-type ArgsMapper from FieldDefinition
+ * @phpstan-import-type ArgsMapper from Executor
  */
 class ExecutionContext
 {
