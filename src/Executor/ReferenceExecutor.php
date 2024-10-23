@@ -1432,7 +1432,6 @@ class ReferenceExecutor implements ExecutorImplementation
     /**
      * @param mixed $runtimeTypeOrName
      * @param AbstractType&Type $returnType
-     * @param mixed $result
      *
      * @throws InvariantViolation
      */
