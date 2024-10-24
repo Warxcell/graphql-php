@@ -741,13 +741,14 @@ class ReferenceExecutor implements ExecutorImplementation
         try {
             // Build a map of arguments from the field.arguments AST, using the
             // variables scope to fulfill any variable references.
+            /** @phpstan-ignore-next-line ignored because no way to tell phpstan what are generics of SplObjectStorage without assign it to var first */
             $this->fieldArgsCache[$fieldDef] ??= new \SplObjectStorage();
 
             $args = $this->fieldArgsCache[$fieldDef][$fieldNode] ??= $argsMapper(Values::getArgumentValues(
                 $fieldDef,
                 $fieldNode,
                 $this->exeContext->variableValues
-            ), $fieldDef, $fieldNode);
+            ), $fieldDef, $fieldNode, $contextValue);
 
             return $resolveFn($rootValue, $args, $contextValue, $info);
         } catch (\Throwable $error) {
